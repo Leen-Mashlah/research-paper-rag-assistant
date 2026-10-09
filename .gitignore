@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Raw research papers (keep folder, ignore contents)
+data/raw_papers/*
+!data/raw_papers/.gitkeep
