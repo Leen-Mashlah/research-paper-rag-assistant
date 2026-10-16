@@ -222,3 +222,7 @@ __marimo__/
 # Raw research papers (keep folder, ignore contents)
 data/raw_papers/*
 !data/raw_papers/.gitkeep
+
+# Generated Chroma vector database files (keep folder, ignore contents)
+vector_store/*
+!vector_store/.gitkeep
