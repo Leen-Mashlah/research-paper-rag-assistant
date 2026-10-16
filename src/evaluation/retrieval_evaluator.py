@@ -21,24 +21,31 @@ def _parse_expected_pages(expected_pages_str):
     if expected_pages_str is None or not expected_pages_str.strip():
         raise ValueError(f"expected_pages is missing or empty: {expected_pages_str!r}")
 
-    s = expected_pages_str.strip()
+    pages = set()
 
-    if "-" in s:
-        parts = s.split("-")
-        if len(parts) != 2:
-            raise ValueError(f"Malformed expected_pages range: {expected_pages_str!r}")
-        try:
-            start, end = int(parts[0].strip()), int(parts[1].strip())
-        except ValueError:
-            raise ValueError(f"Malformed expected_pages range: {expected_pages_str!r}")
-        if start > end:
-            raise ValueError(f"Malformed expected_pages range (start > end): {expected_pages_str!r}")
-        return set(range(start, end + 1))
+    for part in expected_pages_str.strip().split(","):
+        part = part.strip()
+        if not part:
+            raise ValueError(f"Malformed expected_pages value: {expected_pages_str!r}")
 
-    try:
-        return {int(s)}
-    except ValueError:
-        raise ValueError(f"Malformed expected_pages value: {expected_pages_str!r}")
+        if "-" in part:
+            range_parts = part.split("-")
+            if len(range_parts) != 2:
+                raise ValueError(f"Malformed expected_pages range: {expected_pages_str!r}")
+            try:
+                start, end = int(range_parts[0].strip()), int(range_parts[1].strip())
+            except ValueError:
+                raise ValueError(f"Malformed expected_pages range: {expected_pages_str!r}")
+            if start > end:
+                raise ValueError(f"Malformed expected_pages range (start > end): {expected_pages_str!r}")
+            pages.update(range(start, end + 1))
+        else:
+            try:
+                pages.add(int(part))
+            except ValueError:
+                raise ValueError(f"Malformed expected_pages value: {expected_pages_str!r}")
+
+    return pages
 
 
 def evaluate_question(model, db_path, collection_name, row, top_k=5):
